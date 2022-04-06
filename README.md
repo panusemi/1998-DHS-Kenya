@@ -1,4 +1,4 @@
-#READ ME!
+# READ ME!
 
 •	Author: Emily Panus
 
@@ -18,8 +18,11 @@ Here, you will fine the raw data that was used for this analysis, as well as the
 2.	Outputs 
 
 There are the things that I created with the inputs. This includes
+
 •	The reference files
+
 •	The RMarkdown Pdf document
+
 •	The Rmd file with all the code used to produce visuals
 
 3.	Scripts: Contains the R-Script with code that was used to clean the raw data. To obtain data for the Demographic and Health , visit https://dhsprogram.com/publications/publication-fr102-dhs-final-reports.cfm?cssearch=457569_1 and download data and report provided for public use. 

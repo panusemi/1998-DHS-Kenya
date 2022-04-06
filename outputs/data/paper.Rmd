@@ -1,0 +1,229 @@
+---
+title: "Factors of Environment and Mother Characteristics Increasing Child Mortality in 1998 Kenya"
+author: 
+  - Emily Panus
+thanks: "Code and data are available at: https://github.com/panusemi/1998-DHS-Kenya.git."
+date: "`r format(Sys.time(), '%d %B %Y')`"
+abstract: "Mortality rates and the study of a nation death rates occurring during pregnancy or childbirth, or within early stages of a child’s life critical for assessment of population and health policies and programmes. The Kenya’s 1998 Demographic and Health Survey illustrates information on mortality of children that can assess needs of health of the population that are at high risk.  Mortality rates in children especially in third world countries, like Kenya, from 1984 have been increasing in post neonatal, infant, and overall, largely in children under five over the last 14 years. The fluctuating and increasing trends of for children mortality in Kenya, with influences of socioeconomic and biological inequalities in undeveloped counties, reflect the level of poverty and deprivation of a nation’s population."
+output:
+  bookdown::pdf_document2
+toc: FALSE
+bibliography: "outputs/data/references.bib"
+---
+
+# Introduction 
+
+The Demographic and Heath Survey are national sample surveys conducted in many developing countries to get a grasp on the well-being, health, and nutrition its citizens. The DHS has collected information with more than 400 surveys in over 90 countries conducted by the National Council for Population and Development and the Central Bureau of Statistics originally started in 1984. By monitoring and examining trends in the population’s health and economical behaviours are able to see the changes in the well-being and functioning of economy based on different groups of people. Examining the health of important role when creating public policies. The Demographic and Heath Survey will help understand the representativeness of individual and person-based, rather than episode-based, measures related to health behaviors, well-being mortality and quality of life that can be used to make important decisions and conclusions on determinants of ill health and use such information to improve health and economical policy developments and investments in developing nation. This study will use the latest DHS survey done in Kenya in 1998 and focuses on the increasing mortality in children increased before 1998. 
+
+The measure of population can be the measure of child mortality is defined by the number of neonatal, post neonatal, infant, child, and under-five deaths per every 1000 live births. Measuring mortality allows for making population projections and future investments to increase quality and length of populations lives. The quantitative measure may reflect the degree of poverty, general living conditions, well being and illness rates, and the quality of the environment as well as the biological, economical, and social factors that influence the health status of sub-group populations especially in developing countries. Main causes of very early childhood mortality in developing countries like Kenya, as we will be focusing on that, come from factors related mostly to biological conditions the unclean environments and factors of diseases like malaria, a huge problem in African countries, and accidents are predominant in the later child mortality like the postneonatal, infant and under-five mortality. The World Health Organization states that children in sub-Saharan continued to have the highest rates of mortality in the world with approximately 74 deaths per 1000 live births, 14 times higher than the risk for children in Europe and Northern America (@citeWHO).  We will focus on the trends of neonatal, post neonatal, infant, child, and under-five mortality.
+
+# Data 
+
+The Demographic and Health Survey is a survey that collects and assess data on population, health, HIV, and nutrition in many nations’ populations. It has collected more than 400 surveys in over 90 countries conducted by the National Council for Population and Development and the Central Bureau of Statistics originally started in 1984. The focus of this study is findings of the 1998 Kenya Demographic and Health Survey (KDHS). The KDHS is part of the worldwide Demographic and Health Surveys (DHS) program, which is designed to collect data on fertility, family planning, and maternal and child health and on health services utilization. The National Council for Population and Development and the Central Bureau of Statistics try to use uniform survey instruments allows detailed international and national comparisons of health status and health care.
+
+The 1998 Kenya Demographic and Health Survey (KDHS) is the third survey of its kind to be conducted in Kenya, following the 1989 KDHS and 1993 KDHS. The survey represents 7,881 women ages from 15 to 49, which include a large portion of childbearing women and mothers, and 3,407-men ages from 15 to 54. The 1998 Kenya Demographic and Health Survey (KDHS) is the third survey of its kind to be conducted in Kenya, following the 1989 KDHS and 1993 KDHS. The 1998 survey done in Kenya, like every other DHS completed, was designed to provide information on demographic trends and indicators of maternal and child health in Kenya. Due to the growth in man of the nations health policies and population, the 1998 survey methods became more extensive and certain topics become more detailed and exhaustive than earlier surveys done in Kenya. 
+
+Typically, national government organizations administer the survey and analyzed results to obtain qualitative information on health and nutrition, fertility, child mortality, and family/maternal planning. The core questionnaire of the Demographic and Health Survey is adapted to each particular nation being surveyed but overall includes questions on many socioeconomic and biological factors like fertility and mortality, family planning, maternity care, child feeding, vaccination, child morbidity, and AIDS. In this paper, the main focus is studying socioeconomic and biological factors that affect mortality in children in an underdeveloped country and will also use stimulated data to compare how mortality rates of neonatal, post neonatal, infant, children and under-five mortality has changed over time in Kenya. They key variables include neonatal mortality which is the probability of dying within the first month of life, post neonatal mortality which is the difference between infant and neonatal mortality, infant mortality which is the probability of dying before the first birthday, child mortality which is the probability of dying between the first and fifth birthdays and finally under-five mortality which is the probability of dying before the fifth birthday. This report was cleaned and analyzed using R (@citeR), haven (@citehaven), tidyverse (@citetidyverse), and ggplot2(@citeggplot2), readr(@citereadr), tidyr(@citetidyr), dplyr(@citedplyr), janitor(@citejanitor), pdftools(@citepdftools) that allows us to extract data from the 1998 KDHS PDF document and analyze in in our own study, and stringi(@citestringi). 
+
+
+```{r, include=FALSE, message=FALSE}
+library(tidyverse)
+library(ggplot2)
+```
+
+```{r, echo=FALSE}
+mortality_data <- read.csv("inputs/data/cleaned_data.csv")
+```
+
+
+```{r fig1, echo=FALSE, fig.cap="Neonatal, postneonatal, infant child, and under-five mortality by five-year periods preceding the 1998 KDHS"}
+
+mortality_data$years_preceeding <- factor(mortality_data$years_preceeding, levels=c("10-14", "5-9", "0-4"))
+
+ggplot(mortality_data, aes(x = factor(years_preceeding), y = nmr, colour = mortality, group = mortality)) +
+  geom_line(size=1)+
+  theme_minimal()+
+  ylab("Deaths/1000 Live Births")+
+  xlab("Years Preceeding 1998 KDHS")
+  
+```
+
+```{r, echo = FALSE}
+child_mortality_gender_data <- read.csv("inputs/data/child_mortality_gender_data.csv")
+```
+
+```{r fig2, echo=FALSE,  fig.cap="Neonatal, postneonatal, infant child, and under-five mortality by sex of child in 1998 KDHS"}
+child_mortality_gender_long <- child_mortality_gender_data %>% 
+  select(c(1,2,3,4,5,6)) %>% 
+  gather(mortality, value, -c(sex_of_baby))
+
+
+ggplot(child_mortality_gender_long, aes(x = sex_of_baby, y = value, fill = mortality, label = value)) +
+  geom_col()+
+  theme_minimal()+
+  geom_text(position = position_stack(vjust = 0.5))+
+  theme_minimal()+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
+  ylab("Deaths/1000 births")+
+  xlab("Sex of child")+
+  scale_fill_discrete(labels = c("child", "infant", "neonatal", "postneonatal", "under five"))
+
+```
+```{r, echo=FALSE}
+child_mortality_moth_age_data <- read.csv("inputs/data/child_mortality_moth_age_data.csv")
+```
+
+```{r fig3, echo=FALSE,fig.cap="Neonatal, postneonatal, infant child, and under-five mortality by mothers age in the 1998 KDHS"}
+child_mortality_moth_age_long <- child_mortality_moth_age_data %>% select(c(1,2,3,4,5,6)) %>% gather(mortality, value, -c(mother_age))
+
+ggplot(child_mortality_moth_age_long, aes(x = mother_age, y = value, fill = mortality, label = value)) +
+  geom_col(position="dodge2")+
+  theme_minimal()+
+  ylab("Deaths/1000 births")+
+  xlab("Mother's age")+
+  scale_fill_discrete(labels = c("child", "infant", "neonatal", "postneonatal", "under five"))
+```
+
+```{r, echo=FALSE}
+child_mortality_moth_educ_data <- read.csv("inputs/data/child_mortality_moth_educ_data.csv")
+```
+
+
+```{r fig4, echo=FALSE, fig.cap="Neonatal, postneonatal, infant child, and under-five mortality by mothers education in the 1998 KDHS"}
+child_mortality_moth_educ_long <- child_mortality_moth_educ_data %>% select(c(1,2,3,4,5,6)) %>% gather(mortality, value, -c(education))
+
+child_mortality_moth_educ_long$education <- factor(child_mortality_moth_educ_long$education, levels=c("No education", "Primary incomplete", "Primary complete", "Secondary+"))
+
+ggplot(child_mortality_moth_educ_long, aes(x = education, y = value, fill = mortality, label = value)) +
+  geom_col(position="dodge2")+
+  theme_minimal()+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
+  ylab("Deaths/1000 births")+
+  xlab("Education")+
+  scale_fill_discrete(labels = c("child", "infant", "neonatal", "postneonatal", "under five"))
+
+```
+
+```{r, echo=FALSE}
+child_mortality_med_care_data <- read.csv("inputs/data/child_mortality_med_care_data.csv")
+```
+
+```{r fig5, echo=FALSE, warning=FALSE, fig.cap="Neonatal, postneonatal, infant child, and under-five mortality by medical care recieved in the 1998 KDHS"}
+child_mortality_med_care_long <- child_mortality_med_care_data %>% select(c(1,2,3,4,5,6)) %>% gather(mortality, value, -c(medical_care))
+
+child_mortality_med_care_long$mortality <- factor(child_mortality_med_care_long$mortality, levels = c("neonatal", "postneonatal", "infant_mortality", "child_mortality", "under_5_mortality"))
+
+ggplot(child_mortality_med_care_long, aes(x = mortality, y = value, fill = medical_care, label = value)) +
+  geom_col()+
+  theme_minimal()+
+  ylab("Deaths/1000 births")+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
+  scale_fill_discrete(name = "Medical care")
+
+```
+
+\newpage 
+
+# Results 
+
+Figure \@ref(fig:fig1) illustrates the increasing trends of early childhood mortality rates from the periods 0-4, 5-9, and 10-14 years before the 1998 KDHS survey. Under-five mortality has had the largest increase from 1983 to 1998 with there being 90 deaths per 1000 live births in the 10-14 years preceding 1998 and increasing to 112 deaths per 1000 live birth in for the period 0-4 years before the survey. Infant mortality has a similar increasing trend to under-five with it increasing from 62 in 1983 to 74 deaths per 1000 live births in approximately 1998. Both child and postneonatal mortality exhibit slow and steady increase from 30 to 40 deaths per 1000 live births and 33 to 45 deaths per 1000 live births respectively. Neonatal mortality 5-9 years before the 1998 KDHS survey mortality (approximately in 1989 to 1993) decreased from 29 deaths to 26 deaths per 1000 live births and increased 0-4 years before 1998 (1994 to 1998) back to 28 deaths per 1000 births. Overall, we see that in 1998, 1 in 9 Kenyan children did not live to the fifth birthday. 
+
+Many social, economic biological factors and behaviours of mothers and health policies affect the survival of young children. Figure \@ref(fig:fig2) illustrates that male children have a bit of higher mortality than female children with the largest difference in infant mortality with females having 67 deaths per 1000 lives births and males with 75 deaths. Children under five have the highest mortality rates for males and females are 108 and 103 deaths per 1000 births, respectively. Figure \@ref(fig:fig5) also demonstrates that with larger amounts of maternal and child care during pregnancy and delivery decrease the mortality of children and increases the health or the mothers and babies. The graph shows that children born to women who obtained both antenatal and delivery care from medically trained persons during pregnancy decrease mortality in neonatal and postnatal children as we see in Figure \@ref(fig:fig1) that neonatal and postnatal have the lowest deaths per 1000 live births. 
+
+Mothers are said to be very young if they are pregnant under the age of 18 at the time of birth, and too old or have a geriatric pregnancy if they are over the age of 35 at the time of birth. Figure \@ref(fig:fig3) illustrates that young children have a higher risk of dying if they are born to older mothers or older mothers, with the ultimate high of 170 under five deaths per 1000 live births. The graph shows that older children so infant, child and under-five have a much larger mortality in mothers aged 40-49 with neonatal and postnatal mortality similar in mothers aged 20 and under and aged 40-49. Education of mothers also seems to affect the mortality of young children. Figure \@ref(fig:fig4) illustrates that mothers with lower or no levels of education are more likely to experience mortality of their baby. Children of women with a primary incomplete education have slightly higher mortality at each age stage of mortality with the highest of under-five mortality with 138 deaths per 1000 live births than children of women with no education with 123 deaths per 1,000 births. Children of women with a completed primary education and those with some secondary or more levels of school have a lower under-five mortality with 87 deaths and 60 deaths per 1000 births, respectively.
+
+
+# Discussion 
+
+The World Health Organization states that Sub-Sahara Africa and Southern Asia, account for more than 80 per cent of the 5.0 million under-five deaths in 2020, while they only account for 53 per cent of the global live births in 2020 (@citeWHO). Developing countries are the target of high death rates due to their living conditions and lack of resources and technology for their bodies to thrive and grow in. As mentioned in the \@ref(introduction) the primary causes of childhood mortality change as children age, from factors related mostly to biological conditions to factors related mostly to their environment. After the neonatal period, postneonatal and child mortality are caused mainly by childhood diseases and accidents. Infectious diseases, including pneumonia, diarrhoea, and malaria, along with pre-term birth, are hard to escape when live in such environment and causes the largest amounts of death in children.  With the continuous lack of skilled delivery at birth, postnatal care, adequate nutrition, vaccinations, and treatment for such disease’s mortality will never reach desired outcome and will always be higher than in developed countries as long as they are living in conditions of poor water and air quality, no technological availability, health care or sanitation. Although difficult, there needs to be a change in government policies, funding and more foreign aid into health care, education, and technology. This would allow growth in the prevention of diseases, increase vaccinations, medicines, more access to reliable health care and decrease mortality rates. Education is also an important investment to try to decrease child mortality as educating population enables them to increase their health literacy, take preventive healthcare measures and avoid riskier health behaviors as well as create more reliable health care workers. Similarly, technology can also help decrease mortality and improve healthcare of developing countries as not only will it improve living conditions and livelihoods of the population, the advancement of technology in healthcare can diagnose, treat, and administer treatments more easily and effectively increase the expected length of their lives in the long run.
+
+# Weaknesses 
+
+The Demographic and Health Survey displays many benefits in tracking the changes in of child mortality in underdeveloped countries to aid in future management and policies by making population projections and beneficial future investments and development to increase quality, health and length of populations lives especially for the young generations. However, there are some weaknesses in the Demographic and Health Survey. The sample collected of the survey is quite small with samples of 10000 men and women to reflect and estimate the fertility, health, and mortality measures of the nation’s population. A small survey sample in this case makes it difficult and inaccurate to provide assessing patterns, trends, and changes in specific geographic or sub-groups or individuals over time. It would only capture patterns that are representative of an entire population of these subgroup or geographic areas and would not create accurate representations of what is possible happening as it is only assessing few cohorts. Next possible steps would be increasing the number of participants in different cohorts, including more proper stratification and geographic distribution, and improving survey response rate by incentivizing people to take the survey. 
+
+Moreover, the Demographic and Health Survey may include some recall or information bias as many respondents’ answers are based on past events and memory. This may affect the accuracy of the true quantitative measures of mortality and disease of sub-groups of populations. To improve any bias, should consider giving supplementary specific question components or for example to include and conduct saliva or blood testing for AIDS and other heath diseases to determine their biological situations and environments instead of relying on people’s own diagnosis and knowledge of their health condition. Developing countries like Kenya lack sufficient technology and health care and survey data collection result in less precise data compared to countries with more advanced technology. Additionally, there are only three Demographic and Health Surveys done in Kenya and so the limited past research and results creates limitations in continuously improving data collection and accuracy and difficulty to compare past trends and challenges in measuring health, mortality and quality of life. 
+
+
+# Appendix
+
+**Motivation**
+	
+	1. For what purpose was the dataset created? Was there a specific 
+	task in mind? Was there a specific gap that needed to be filled?
+	    - The dataset was created to enable analysis of health in
+	    developing countries. The cleaned dataset and analysis are
+	    publicly available in a structured format that had the 
+	    biographical and political information on Australian 
+	    politicians that was needed for modelling.
+
+	2. Who created the dataset and on behalf of which entity ?
+	    - National Council for Population and Development and 
+	    the Central Bureau of Statistics
+
+**Composition**
+
+	1. What do the instances that comprise the dataset represent 
+	(for example, documents, photos, people, countries)? Are there
+	multiple types of instances (for example, movies, users, and 
+	ratings; people and interactions between them; nodes and edges)?
+	Please provide a description.
+		- The dataset collects data on the demographic and health of
+		sample of Kenyan population in 1998.
+		
+	2. How many instances are there in total (of each type, if 
+	appropriate)?
+		- The KDHS (Kenya Demographic and Health Survey) has been 
+		collected three times.
+		
+	3. Does the dataset contain all possible instances or is it 
+	a sample (not necessarily random) of instances from a larger 
+	set? If the dataset is a sample, then what is the larger set? 
+	Is the sample representative of the larger set (for example, 
+	geographic coverage)? If so, please describe how this 
+	representativeness was validated/verified. If it is not 
+	representative of the larger set, please describe why not 
+	(for example, to cover a more diverse range of instances, 
+	because instances were withheld or unavailable).
+		- The dataset is a sample population representative of 
+		Nairobi, Central, Coast, Eastern, Nyanza, Rift Valley, Western parts of Kenya.
+		
+	4. Does the dataset identify any sub-populations (for 
+	example, by age, gender)? If so, please describe how 
+	these subpopulations are identified and provide a 
+	description of their respective distributions within the dataset.
+		- Many subpopulations in data including gender (male, 
+		female), age, education, women’s health, nutrition, 
+		water supply, mortality.
+	
+**Collection process**
+	
+	1. How was the data associated with each instance acquired?
+	Was the data directly observable (for example, raw text, 
+	movie ratings), reported by subjects (for example, survey
+	responses), or indirectly inferred/derived from other data
+	(for example, part-of-speech tags, model-based guesses for
+	age or language)? If the data was reported by subjects or 
+	indirectly inferred/derived from other data, was the data
+	validated/verified? If so, please describe how.
+		-Survey responses 
+		
+	2. What mechanisms or procedures were used to collect the data 
+	(for example, hardware apparatuses or sensors, manual human 
+	curation, software programs, software APIs)? How were these
+	mechanisms or procedures validated?
+		- Manual human curation
+	
+
+**Uses**
+	
+	1. Has the dataset been used for any tasks already? If so, 
+	please provide a description.
+		- Yes, analyzed and reported summarises the findings of the
+		1998 Kenya Demographic and Health Survey. 
+
+
+\newpage
+
+# References
+
+

@@ -1,0 +1,16 @@
+years_preceeding,mortality,nmr
+0-4,Neonatal,28.4
+5-9,Neonatal,25.5
+10-14,Neonatal,28.8
+0-4,Postneonatal,45.3
+5-9,Postneonatal,42.1
+10-14,Postneonatal,33.2
+0-4,Infant,73.7
+5-9,Infant,67.7
+10-14,Infant,61.9
+0-4,Child,40.8
+5-9,Child,33.5
+10-14,Child,29.5
+0-4,Under-five,111.5
+5-9,Under-five,98.9
+10-14,Under-five,89.6
